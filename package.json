@@ -12,11 +12,12 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "axios": "^1.13.2",
-    "framer-motion": "^12.23.22",
+    "framer-motion": "^12.23.26",
     "lucide-react": "^0.544.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.3"
+    "react-router-dom": "^7.9.3",
+    "zod": "^4.3.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

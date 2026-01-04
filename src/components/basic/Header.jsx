@@ -12,7 +12,7 @@ const Header = () => {
     // eslint-disable-next-line no-unused-vars
     const [isLoggedIn, setIsLoggedIn] = useState(false) // This would be replaced with actual auth state
     return (
-        <header className="sticky top-0 bg-dark-light shadow-md">
+        <header className="z-10 sticky top-0 bg-dark-light shadow-md">
             <div className="container mx-auto px-4 py-4">
                 <div className="flex justify-between items-center">
                     <Link to="/" className="flex items-center">

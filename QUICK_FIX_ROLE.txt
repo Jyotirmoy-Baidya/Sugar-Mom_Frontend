@@ -1,0 +1,38 @@
+QUICK FIX: Add Role Selection to Registration Form
+===================================================
+
+Add this code to RegisterPage.jsx after the Password field (around line 113):
+
+```jsx
+{/* ROLE SELECTION */}
+<div className="relative">
+    <label className="block text-sm text-gray-400 mb-2 font-medium">
+        I am a
+    </label>
+    <select
+        required
+        value={data.role || "boy"}
+        onChange={(e) => setData({ ...data, role: e.target.value })}
+        className="w-full p-3 bg-dark border border-gray-700 text-white rounded-md focus:ring-primary focus:border-primary"
+    >
+        <option value="boy">Boy (Looking for Sugar Mom)</option>
+        <option value="sugarmom">Sugar Mom (Looking for Boys)</option>
+    </select>
+</div>
+```
+
+AND update the initial state to include role:
+
+Line 10-15, add role field:
+```jsx
+const [data, setData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    role: "boy",  // ADD THIS LINE
+});
+```
+
+DONE! The registration will now work even without this UI change (defaults to "boy"),
+but adding the selector gives users the choice.

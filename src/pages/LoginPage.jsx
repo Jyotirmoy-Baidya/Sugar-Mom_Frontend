@@ -1,185 +1,100 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
-// eslint-disable-next-line no-unused-vars
-import { motion } from "framer-motion";
+import { useState } from "react";
+import axiosInstance from "../utils/axiosInstance";
+import { useNavigate, Link } from "react-router-dom";
+import { MailIcon, LockIcon, Loader2 } from "lucide-react";
 
-const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-};
+export default function LoginPage() {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
-const LoginPage = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+    });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Login attempt:", { email, password, rememberMe });
+
+        try {
+            setLoading(true);
+
+            const res = await axiosInstance.post("/auth/login", data);
+            console.log(res)
+            if (res.data) {
+                const token = res.data.token;
+                localStorage.setItem("token", token);
+
+                alert("Login successful!");
+
+
+                navigate("/dashboard");
+            }
+        } catch (err) {
+            alert(err?.response?.data?.error || "Login failed! Please check your credentials.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="relative min-h-screen bg-gradient-to-b from-[#0b0b0d] via-[#0f1113] to-[#0a0a0c] flex items-center justify-center px-6 py-16 text-white font-sans overflow-hidden">
-            {/* Background layers */}
-            <div className="absolute inset-0 -z-10">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1596510914841-40074a91f90d?q=80&w=2070')] bg-cover bg-center opacity-10 blur-sm"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70"></div>
-            </div>
+        <div className="min-h-screen bg-dark flex items-center justify-center px-4">
+            <div className="bg-dark-light w-full max-w-md p-8 rounded-xl shadow-lg">
+                <h2 className="text-3xl font-bold text-white text-center mb-4">
+                    Welcome Back
+                </h2>
+                <p className="text-gray-400 text-center mb-8">
+                    Login to continue
+                </p>
 
-            {/* Login Card */}
-            <motion.div
-                initial="hidden"
-                animate="show"
-                variants={fadeInUp}
-                className="relative w-full max-w-md bg-white/5 border border-gray-800 rounded-3xl backdrop-blur-md shadow-2xl p-8"
-                style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.6)" }}
-            >
-                {/* Header */}
-                <motion.div variants={fadeInUp} className="text-center mb-8">
-                    <h2 className="text-4xl font-serif font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FFE9B3] via-[#FFD27A] to-[#E6BA3D]">
-                        Welcome Back
-                    </h2>
-                    <p className="mt-2 text-gray-400 text-sm">
-                        Sign in to continue your exclusive experience
-                    </p>
-                </motion.div>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* EMAIL */}
+                    <div className="relative">
+                        <MailIcon size={18} className="absolute left-3 top-3 text-gray-500" />
+                        <input
+                            type="email"
+                            placeholder="Email Address"
+                            required
+                            className="w-full pl-10 p-3 bg-dark border border-gray-700 text-white rounded-md"
+                            onChange={(e) => setData({ ...data, email: e.target.value })}
+                        />
+                    </div>
 
-                {/* Form */}
-                <form className="space-y-6" onSubmit={handleSubmit}>
-                    {/* Email */}
-                    <motion.div variants={fadeInUp}>
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-300 mb-1"
-                        >
-                            Email Address
-                        </label>
-                        <div className="relative">
-                            <MailIcon
-                                size={18}
-                                className="absolute left-3 top-2.5 text-gray-500"
-                            />
-                            <input
-                                id="email"
-                                type="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="bg-black/40 border border-gray-700 text-white placeholder-gray-500 text-sm rounded-md focus:ring-[#D4AF37] focus:border-[#D4AF37] block w-full pl-10 p-2.5"
-                                placeholder="name@example.com"
-                            />
-                        </div>
-                    </motion.div>
+                    {/* PASSWORD */}
+                    <div className="relative">
+                        <LockIcon size={18} className="absolute left-3 top-3 text-gray-500" />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            required
+                            className="w-full pl-10 p-3 bg-dark border border-gray-700 text-white rounded-md"
+                            onChange={(e) => setData({ ...data, password: e.target.value })}
+                        />
+                    </div>
 
-                    {/* Password */}
-                    <motion.div variants={fadeInUp}>
-                        <label
-                            htmlFor="password"
-                            className="block text-sm font-medium text-gray-300 mb-1"
-                        >
-                            Password
-                        </label>
-                        <div className="relative">
-                            <LockIcon
-                                size={18}
-                                className="absolute left-3 top-2.5 text-gray-500"
-                            />
-                            <input
-                                id="password"
-                                type={showPassword ? "text" : "password"}
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="bg-black/40 border border-gray-700 text-white placeholder-gray-500 text-sm rounded-md focus:ring-[#D4AF37] focus:border-[#D4AF37] block w-full pl-10 pr-10 p-2.5"
-                                placeholder="••••••••"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-300"
-                            >
-                                {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
-                            </button>
-                        </div>
-                    </motion.div>
-
-                    {/* Remember + Forgot */}
-                    <motion.div
-                        variants={fadeInUp}
-                        className="flex items-center justify-between text-sm"
-                    >
-                        <label className="flex items-center text-gray-300">
-                            <input
-                                type="checkbox"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                                className="h-4 w-4 text-[#D4AF37] border-gray-700 rounded bg-black/30 focus:ring-[#D4AF37]"
-                            />
-                            <span className="ml-2">Remember me</span>
-                        </label>
-                        <Link
-                            to="/forgot-password"
-                            className="text-[#D4AF37] hover:text-[#FFD27A]"
-                        >
-                            Forgot password?
-                        </Link>
-                    </motion.div>
-
-                    {/* Button */}
-                    <motion.button
-                        variants={fadeInUp}
+                    {/* SUBMIT */}
+                    <button
                         type="submit"
-                        className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#D4AF37] to-[#B78B2E] text-black font-semibold shadow-lg transform hover:scale-[1.02] transition"
+                        disabled={loading}
+                        className={`w-full flex justify-center items-center gap-2 py-3 rounded-md text-dark font-semibold transition ${loading ? "bg-gray-500 cursor-not-allowed" : "bg-primary hover:bg-primary-dark"
+                            }`}
                     >
-                        Sign In
-                    </motion.button>
-
-                    {/* Signup Link */}
-                    <motion.div
-                        variants={fadeInUp}
-                        className="text-center text-sm text-gray-400"
-                    >
-                        Don’t have an account?{" "}
-                        <Link
-                            to="/signup"
-                            className="text-[#D4AF37] hover:text-[#FFD27A] font-medium"
-                        >
-                            Join Now
-                        </Link>
-                    </motion.div>
+                        {loading ? (
+                            <>
+                                <Loader2 size={18} className="animate-spin" /> Logging in...
+                            </>
+                        ) : (
+                            "Login"
+                        )}
+                    </button>
                 </form>
 
-                {/* Divider */}
-                <motion.div variants={fadeInUp} className="mt-8">
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-700" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-transparent text-gray-400">
-                                Or continue with
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Social Buttons */}
-                    <div className="mt-6 grid grid-cols-2 gap-3">
-                        {["Google", "Apple"].map((provider) => (
-                            <button
-                                key={provider}
-                                type="button"
-                                className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-700 rounded-lg bg-black/40 text-sm font-medium text-gray-300 hover:bg-white/5 transition"
-                            >
-                                {provider}
-                            </button>
-                        ))}
-                    </div>
-                </motion.div>
-            </motion.div>
+                <p className="mt-6 text-center text-sm text-gray-400">
+                    Don’t have an account?{" "}
+                    <Link to="/signup" className="text-primary hover:text-primary-light">
+                        Register
+                    </Link>
+                </p>
+            </div>
         </div>
     );
-};
-
-export default LoginPage;
+}

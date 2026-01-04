@@ -22,7 +22,7 @@ export default function RegisterFlow() {
 
                     {/* Step Indicator */}
                     <div className="flex items-center justify-center mt-6 space-x-2">
-                        {[1, 2, 3, 4, 5].map((n) => (
+                        {[1, 2, 3].map((n) => (
                             <div
                                 key={n}
                                 className={`h-2 w-2 rounded-full transition-all duration-300 ${step >= n ? "bg-primary" : "bg-gray-700"
@@ -37,9 +37,9 @@ export default function RegisterFlow() {
                     <>
                         {step === 1 && <RegisterBasic next={() => setStep(2)} />}
                         {step === 2 && <VerifyEmailOtp next={() => setStep(3)} />}
-                        {step === 3 && <SetProfileDetails next={() => setStep(4)} />}
+                        {/* {step === 3 && <SetProfileDetails next={() => setStep(4)} />}
                         {step === 4 && <UploadDocuments next={() => setStep(5)} />}
-                        {step === 5 && <RegisterComplete />}
+                        {step === 5 && <RegisterComplete />} */}
                     </>
                 </div>
 

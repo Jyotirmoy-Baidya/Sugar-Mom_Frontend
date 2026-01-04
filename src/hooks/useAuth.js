@@ -1,6 +1,8 @@
-import axiosInstance from "../utils/axiosInstance"
+export function getToken() {
+    return localStorage.getItem("token");
+}
 
-export async function checkProfileVerified() {
-    const res = await axiosInstance.get("/user/is-profile-verified")
-    return res.data.isVerified
+export function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
 }
